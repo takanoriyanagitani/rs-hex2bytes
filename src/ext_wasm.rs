@@ -46,3 +46,15 @@ pub extern "C" fn hex2bytes_std() -> i32 {
         .ok()
         .unwrap_or(-1)
 }
+
+#[cfg(feature = "chunk8")]
+#[allow(unsafe_code)]
+#[no_mangle]
+pub extern "C" fn hex2bytes_std_chunk8() -> i32 {
+    let i: &[u8] = unsafe { &I_HEX_BYTES };
+    let o: &mut Vec<u8> = unsafe { &mut O_BYTES };
+    crate::chunk8::hex_str_bytes2buf(i, o)
+        .try_into()
+        .ok()
+        .unwrap_or(-1)
+}

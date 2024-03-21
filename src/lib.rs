@@ -194,3 +194,6 @@ mod test_hex_bytes2bytes_std {
 
 #[cfg(feature = "ext_wasm")]
 pub mod ext_wasm;
+
+#[cfg(feature = "chunk8")]
+pub mod chunk8;

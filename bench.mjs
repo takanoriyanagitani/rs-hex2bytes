@@ -20,34 +20,44 @@ import { randomBytes } from "node:crypto"
             output_ptr,
 
             hex2bytes_std,
+            hex2bytes_std_chunk8,
         } = instance?.exports || {}
 
         const inputSize = 1048576
         const inputBuf = randomBytes(inputSize)
         const inputHex = inputBuf.toString("hex")
 
-        const lpcnt = 16
+        const lpcnt = 128
 
         const enc = new TextEncoder()
 
-        const started = Date.now()
-        let tot_bytes = 0
-        for(let i=0; i<lpcnt; i++){
-            const ilen = inputHex.length
+        const funcs = [
+            {name: "slow", f: hex2bytes_std},
+            {name: "chunk8", f: hex2bytes_std_chunk8},
+        ]
 
-            const icap = input_resize(ilen)
-            const ocap = output_reset(ilen >> 1)
+        const result = funcs.map(pair => {
+            const { name, f } = pair
+            const started = Date.now()
+            let tot_bytes = 0
+            for(let i=0; i<lpcnt; i++){
+                const ilen = inputHex.length
 
-            const iview = new Uint8Array(memory?.buffer, input_ptr(), ilen)
-            enc.encodeInto(inputHex, iview)
+                const icap = input_resize(ilen)
+                const ocap = output_reset(ilen >> 1)
 
-            const len = hex2bytes_std()
-            tot_bytes += len
-        }
-        const elapsed = Date.now() - started
-        const bytes_per_ms = tot_bytes / elapsed
+                const iview = new Uint8Array(memory?.buffer, input_ptr(), ilen)
+                enc.encodeInto(inputHex, iview)
 
-        return {elapsed, tot_bytes, bytes_per_ms}
+                const len = f()
+                tot_bytes += len
+            }
+            const elapsed = Date.now() - started
+            const bytes_per_ms = tot_bytes / elapsed
+
+            return {name, elapsed, tot_bytes, bytes_per_ms}
+        })
+        return result
     })
     .then(console.info)
     .catch(console.warn)

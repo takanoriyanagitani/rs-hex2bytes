@@ -25,3 +25,5 @@ codegen-units = 16
 
 ext_wasm = []
 wasm_simd = []
+
+chunk8 = []
