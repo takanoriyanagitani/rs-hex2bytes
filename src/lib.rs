@@ -197,3 +197,6 @@ pub mod ext_wasm;
 
 #[cfg(feature = "chunk8")]
 pub mod chunk8;
+
+#[cfg(all(feature = "chunk8simd", target_family = "wasm"))]
+pub mod chunk8simd;

@@ -21,11 +21,13 @@ import { randomBytes } from "node:crypto"
 
             hex2bytes_std,
             hex2bytes_std_chunk8,
+            hex2bytes_chunk8simd,
         } = instance?.exports || {}
 
         const inputSize = 1048576
         const inputBuf = randomBytes(inputSize)
-        const inputHex = inputBuf.toString("hex")
+        const inputHex = inputBuf.toString("hex").toUpperCase()
+        const ilen = inputHex.length
 
         const lpcnt = 128
 
@@ -34,6 +36,7 @@ import { randomBytes } from "node:crypto"
         const funcs = [
             {name: "slow", f: hex2bytes_std},
             {name: "chunk8", f: hex2bytes_std_chunk8},
+            {name: "chunk8simd", f: hex2bytes_chunk8simd},
         ]
 
         const result = funcs.map(pair => {
@@ -41,7 +44,6 @@ import { randomBytes } from "node:crypto"
             const started = Date.now()
             let tot_bytes = 0
             for(let i=0; i<lpcnt; i++){
-                const ilen = inputHex.length
 
                 const icap = input_resize(ilen)
                 const ocap = output_reset(ilen >> 1)

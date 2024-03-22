@@ -22,8 +22,8 @@ codegen-units = 16
 [dependencies]
 
 [features]
-
 ext_wasm = []
 wasm_simd = []
 
 chunk8 = []
+chunk8simd = []
