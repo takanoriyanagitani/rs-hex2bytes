@@ -16,6 +16,46 @@
 //! "0123456789abcdef" -> 0x0123456789abcdef(128 bits string -> 64 bits)
 //! ```
 
+pub fn hex2bits4_upper(hex: u8) -> u8 {
+    let sub: u8 = match hex {
+        0x41..=0xff => 0x37,
+        _ => 0x30,
+    };
+    hex.saturating_sub(sub)
+}
+
+pub fn hex2byte_upper(hex: u16) -> u8 {
+    let a: [u8; 2] = hex.to_be_bytes();
+    let hi: u8 = hex2bits4_upper(a[0]);
+    let lo: u8 = hex2bits4_upper(a[1]);
+    (hi << 4) | lo
+}
+
+pub fn hex2bytes_upper5(hex: u32) -> u16 {
+    let hi: u32 = hex >> 16;
+    let lo: u32 = hex & 0xffff;
+    let h: u16 = hex2byte_upper(hi as u16).into();
+    let l: u16 = hex2byte_upper(lo as u16).into();
+    (h << 8) | l
+}
+
+pub fn hex2bytes_upper6(hex: u64) -> u32 {
+    let hi: u64 = hex >> 32;
+    let lo: u64 = hex & 0xffff_ffff;
+    let h: u32 = hex2bytes_upper5(hi as u32).into();
+    let l: u32 = hex2bytes_upper5(lo as u32).into();
+    (h << 16) | l
+}
+
+/// Converts hex(u128, [0-9A-F]) to bytes(u64)
+pub fn hex2bytes_upper7(hex: u128) -> u64 {
+    let hi: u128 = hex >> 64;
+    let lo: u128 = hex & 0xffff_ffff_ffff_ffff;
+    let h: u64 = hex2bytes_upper6(hi as u64).into();
+    let l: u64 = hex2bytes_upper6(lo as u64).into();
+    (h << 32) | l
+}
+
 /// Converts a hex str(e.g, `"ff"`) to a u8(e.g, `0xff`).
 pub fn hex_str2byte_std(s: &str) -> Option<u8> {
     u8::from_str_radix(s, 16).ok()

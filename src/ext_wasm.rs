@@ -78,6 +78,21 @@ pub extern "C" fn hex2bytes_std_chunk8() -> i32 {
     .unwrap_or(-1)
 }
 
+#[cfg(feature = "chunk8")]
+#[allow(unsafe_code)]
+#[no_mangle]
+pub extern "C" fn hex2bytes_chunk8_upper() -> i32 {
+    let cv: *const Vec<u8> = unsafe { addr_of!(I_HEX_BYTES) };
+    let ov: Option<&Vec<u8>> = unsafe { cv.as_ref() };
+    ov.and_then(|v: &Vec<u8>| {
+        let i: &[u8] = v;
+        let mv: *mut Vec<u8> = unsafe { addr_of_mut!(O_BYTES) };
+        let ov: Option<&mut Vec<u8>> = unsafe { mv.as_mut() };
+        ov.and_then(|o: &mut Vec<u8>| crate::chunk8::hex_str_bytes2buf_upper(i, o).try_into().ok())
+    })
+    .unwrap_or(-1)
+}
+
 #[cfg(feature = "chunk8simd")]
 #[allow(unsafe_code)]
 #[no_mangle]

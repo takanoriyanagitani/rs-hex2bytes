@@ -22,6 +22,7 @@ import { randomBytes } from "node:crypto"
             hex2bytes_std,
             hex2bytes_std_chunk8,
             hex2bytes_chunk8simd,
+			hex2bytes_chunk8_upper,
         } = instance?.exports || {}
 
         const inputSize = 1048576
@@ -36,6 +37,7 @@ import { randomBytes } from "node:crypto"
         const funcs = [
             {name: "slow", f: hex2bytes_std},
             {name: "chunk8", f: hex2bytes_std_chunk8},
+            {name: "chunk8upper", f: hex2bytes_chunk8_upper},
             {name: "chunk8simd", f: hex2bytes_chunk8simd},
         ]
 
