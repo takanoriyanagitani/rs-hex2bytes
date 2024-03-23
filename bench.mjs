@@ -57,8 +57,10 @@ import { randomBytes } from "node:crypto";
         }
         const elapsed = Date.now() - started;
         const bytes_per_ms = tot_bytes / elapsed;
+        const oview = new Uint8Array(memory?.buffer, output_ptr(), ilen >> 1);
+        const sum = oview.reduce((state, next) => state + next, 0);
 
-        return { name, elapsed, tot_bytes, bytes_per_ms };
+        return { name, elapsed, tot_bytes, bytes_per_ms, sum };
       });
       return result;
     })

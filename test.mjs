@@ -21,6 +21,7 @@ import { readFile } from "node:fs/promises";
         hex2bytes_std,
         hex2bytes_std_chunk8,
         hex2bytes_chunk8simd,
+        hex2bytes_chunk8_upper,
       } = instance?.exports || {};
 
       const hex365le = "0000124200001242";
@@ -37,7 +38,8 @@ import { readFile } from "node:fs/promises";
       enc.encodeInto(hex365le, iview);
 
       //const len = hex2bytes_std()
-      const len = hex2bytes_chunk8simd();
+      //const len = hex2bytes_chunk8simd();
+      const len = hex2bytes_chunk8_upper();
       const oview = new Uint8Array(memory?.buffer, output_ptr(), len);
       const obuf = Buffer.from(oview);
       return obuf.readFloatLE(0);
