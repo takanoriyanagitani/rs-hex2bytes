@@ -11,6 +11,7 @@ unsafe_code = "deny"
 
 [lints.clippy]
 unwrap_used = "forbid"
+missing_const_for_fn = "forbid"
 
 [profile.release-wasm]
 inherits = "release"
